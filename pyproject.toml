@@ -13,3 +13,5 @@ select = ["E", "F", "W", "I", "UP", "B"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# CI runs plain `pytest`, which (unlike `python -m pytest`) does not put the repo root on sys.path.
+pythonpath = ["."]
