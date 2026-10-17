@@ -1,0 +1,9 @@
+{
+  "searchTerms": [
+    "bluetooth speaker"
+  ],
+  "maxResultsPerTerm": 20,
+  "proxyConfiguration": {
+    "useApifyProxy": true
+  }
+}
