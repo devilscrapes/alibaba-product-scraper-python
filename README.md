@@ -15,7 +15,7 @@ This repository is a small, tested Python client for the **[Alibaba Products Scr
 
 ## 🔥 What you get
 
-- **One row per unique product**: product ID, title, price or price range, minimum order quantity, supplier name, image URL and product URL.
+- **One row per unique product**, carrying the offer's title, its unit price or price band, the MOQ, the seller's company name, the main image and a link to the listing.
 - **Many keywords per run**: every search term is paginated on its own, up to the limit you set.
 - **No repeat rows**: sponsored offers that reappear on later result pages are removed across the whole run, so you are not billed twice for one product.
 - **One bad term never sinks the run**: a term that fails is skipped and logged while the other terms finish.
@@ -85,35 +85,35 @@ The script sends `input.json` to the Actor unchanged. The bundled file searches 
 }
 ```
 
-| Field | Type | Required | Default | Description |
+| Field | Type | Required | Default | Allowed values |
 |---|---|---|---|---|
-| `searchTerms` | array | no | `["bluetooth speaker", "led strip light"]` | One or more free-text Alibaba search queries (e.g. bluetooth speaker, led strip light). Each term is fetched as its own paginated trade/search run. |
-| `maxResultsPerTerm` | integer | no | `100` | Cap on unique products collected per search term. Values above ~50 force multi-page pagination with run-wide duplicate removal. |
-| `proxyConfiguration` | object | no | `{"useApifyProxy": true}` | Apify Proxy spec — mandatory field. The Actor defaults to a RESIDENTIAL proxy pinned to the US when this is left at {"useApifyProxy": true} — the default (datacenter/auto) pool hit a served anti-bot challenge in cloud QA (2026-09-17). Override apifyProxyGroups/apifyProxyCountry here to change it. |
+| `searchTerms` | array | no | `["bluetooth speaker", "led strip light"]` | — |
+| `maxResultsPerTerm` | integer | no | `100` | — |
+| `proxyConfiguration` | object | no | `{"useApifyProxy": true}` | — |
 
 ## 📤 Output
 
 Every dataset row describes one product offer. Prices are kept exactly as Alibaba shows them, including ranges like `$3.50-5.20`, so nothing is lost in a currency or rounding conversion; parse them in your own code when you need numbers.
 
-| Field | Type | Description |
+| Field | Type | Always present |
 |---|---|---|
-| `product_id` | string | Alibaba's internal product ID. |
-| `search_term` | string | The search query that produced this row. |
-| `title` | string | Product title as listed on the search results page. |
-| `price` | string or null | Raw price or price-range string as served (mixed currency formats preserved). |
-| `moq` | string or null | Minimum order quantity string, when present. |
-| `supplier_name` | string or null | Supplier / company name, when present. |
-| `image_url` | string or null | Primary listing image URL. |
-| `product_url` | string | Absolute alibaba.com product detail page URL. |
-| `page_number` | integer | 1-indexed search results page this row was found on. |
-| `scraped_at` | string | UTC ISO-8601 timestamp captured when the page was fetched. |
+| `product_id` | string | yes |
+| `search_term` | string | yes |
+| `title` | string | yes |
+| `price` | string or null | no |
+| `moq` | string or null | no |
+| `supplier_name` | string or null | no |
+| `image_url` | string or null | no |
+| `product_url` | string | yes |
+| `page_number` | integer | yes |
+| `scraped_at` | string | yes |
 
 ## 💰 Pricing
 
-| Event | Price (USD) | When it is charged |
-|---|---|---|
-| Actor start | $0.2 | Charged once when the Actor begins a run. |
-| Result item | $0.006 | Charged once per validated product row pushed to the dataset. |
+| Event | Price (USD) |
+|---|---|
+| Actor start | $0.2 |
+| Result item | $0.006 |
 
 Prices as configured on 2026-09-17. The [Actor page](https://apify.com/DevilScrapes/alibaba-products-scraper) always shows the current price. Runs are billed to the Apify account that owns the token. Use `--max-charge` to cap what a single run can cost.
 
